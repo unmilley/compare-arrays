@@ -1,0 +1,44 @@
+{
+  "name": "@unmilley/compare-arrays",
+  "version": "1.0.0",
+  "description": "Comparison of JavaScript object arrays with additional results.",
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "author": "Alexandr Lyadov <hello@milley.uno> (https://milley.uno/)",
+  "homepage": "https://github.com/unmilley/compare-arrays#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unmilley/compare-arrays.git"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "vitest dev",
+    "lint": "eslint . && prettier -c .",
+    "lint:fix": "eslint . --fix && prettier -w .",
+    "prepack": "pnpm build",
+    "release": "pnpm test && npm publish --access public && git push --follow-tags",
+    "test": "pnpm lint:fix && pnpm test:types && vitest run --coverage",
+    "test:types": "tsc --noEmit --skipLibCheck"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.13",
+    "@vitest/coverage-v8": "^3.0.9",
+    "eslint": "^9.23.0",
+    "eslint-config-unjs": "^0.4.2",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2",
+    "unbuild": "^3.5.0",
+    "vitest": "^3.0.9"
+  },
+  "packageManager": "pnpm@10.10.0"
+}
