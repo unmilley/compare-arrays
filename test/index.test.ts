@@ -45,3 +45,22 @@ test("Explicitly specifying withoutCounter (2)", () => {
 test("Explicitly specifying withoutCounter (3)", () => {
   expect(compareArrays(data3, data4, { withCounter: false })).toBeTruthy();
 });
+
+test("Explicit indication of changes (1)", () => {
+  expect(compareArrays(data2, data3, { withModified: true })).toMatchObject({
+    deleted: [{ name: "Alex" }, { name: "Tommy" }],
+    added: [{ name: "Elena" }, { name: "Jesse" }],
+  });
+});
+test("Explicit indication of changes (2)", () => {
+  expect(compareArrays(data1, data5, { withModified: true })).toMatchObject({
+    deleted: [{ name: "Tommy" }],
+    added: [{ name: "Elena" }],
+  });
+});
+test("Explicit indication of changes (3)", () => {
+  expect(compareArrays(data1, data2, { withModified: true })).toMatchObject({
+    deleted: [],
+    added: [],
+  });
+});
