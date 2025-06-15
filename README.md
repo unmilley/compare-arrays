@@ -32,9 +32,9 @@ console.log(arraysEqual); // true or false
 const changes = compareArrays(oldData, newData, { withCounter: true });
 console.log(changes); // { added: 2, deleted: 1 }
 
-// Option 3: Explicitly specifying withoutCounter
-const isEqual = compareArrays(oldData, newData, { withCounter: false });
-console.log(isEqual); // true or false
+// Option 3: Explicit indication of changes
+const changes = compareArrays(oldData, newData, { withModified: true });
+console.log(changes); // { added: [{...}, {...}], deleted: [{...}] }
 ```
 
 ## Development
