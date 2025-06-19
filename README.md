@@ -1,10 +1,14 @@
 # @unmilley/compare-arrays
 
-Comparison of JavaScript object arrays with additional results.
+Comparing the contents of the two arrays with additional results.
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
+
+> [!IMPORTANT]  
+> Compare only the contents of an array with the contents of another array.\
+> Neither the order nor the index
 
 ## Usage
 

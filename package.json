@@ -1,7 +1,7 @@
 {
   "name": "@unmilley/compare-arrays",
-  "version": "2.0.1",
-  "description": "Comparison of JavaScript object arrays with additional results.",
+  "version": "3.0.0",
+  "description": "Comparing the contents of the two arrays with additional results.",
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
