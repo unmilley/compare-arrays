@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { describe, expect, expectTypeOf, it, test } from "vitest";
 import { compareArrays } from "../src";
 
 const data1 = [{ name: "Alex" }, { name: "Tommy" }];
@@ -6,61 +6,74 @@ const data2 = [{ name: "Alex" }, { name: "Tommy" }];
 const data3 = [{ name: "Elena" }, { name: "Jesse" }];
 const data4 = [{ name: "Jesse" }, { name: "Elena" }];
 const data5 = [{ name: "Alex" }, { name: "Elena" }];
+const data6 = [1, 2, 3];
+const data7 = [1, 2, 3];
+const data8 = [1, 2, 3, 4];
 
-test("Simple comparison (1)", () => {
-  expect(compareArrays(data1, data2)).toBeTruthy();
-});
-test("Simple comparison (2)", () => {
-  expect(compareArrays(data1, data3)).toBeFalsy();
-});
-test("Simple comparison (3)", () => {
-  expect(compareArrays(data3, data4)).toBeTruthy();
-});
-
-test("Getting change counters (1)", () => {
-  expect(compareArrays(data2, data3, { withCounter: true })).toMatchObject({
-    deleted: 2,
-    added: 2,
-  });
-});
-test("Getting change counters (2)", () => {
-  expect(compareArrays(data1, data5, { withCounter: true })).toMatchObject({
-    deleted: 1,
-    added: 1,
-  });
-});
-test("Getting change counters (3)", () => {
-  expect(compareArrays(data1, data2, { withCounter: true })).toMatchObject({
-    deleted: 0,
-    added: 0,
+describe.each([
+  { a: data1, b: data2, expected: true },
+  { a: data1, b: data3, expected: false },
+  { a: data6, b: data7, expected: true },
+])(`describe usual compare`, ({ a, b, expected }) => {
+  test(`a: ${typeof a[0]}[] && b: ${typeof b[0]}[] => ${expected} `, () => {
+    const res = compareArrays(a, b);
+    expect(res).toBe(expected);
+    expectTypeOf(res).toEqualTypeOf<boolean>();
   });
 });
 
-test("Explicitly specifying withoutCounter (1)", () => {
-  expect(compareArrays(data1, data2, { withCounter: false })).toBeTruthy();
-});
-test("Explicitly specifying withoutCounter (2)", () => {
-  expect(compareArrays(data1, data3, { withCounter: false })).toBeFalsy();
-});
-test("Explicitly specifying withoutCounter (3)", () => {
-  expect(compareArrays(data3, data4, { withCounter: false })).toBeTruthy();
+describe.each([
+  {
+    a: data2,
+    b: data3,
+    expected: { deleted: 2, added: 2 },
+  },
+  {
+    a: data1,
+    b: data5,
+    expected: { deleted: 1, added: 1 },
+  },
+  {
+    a: data6,
+    b: data7,
+    expected: { deleted: 0, added: 0 },
+  },
+  {
+    a: data6,
+    b: data8,
+    expected: { deleted: 0, added: 1 },
+  },
+])(`describe withCounter compare`, ({ a, b, expected }) => {
+  test(`a: ${typeof a[0]}[] && b: ${typeof b[0]}[] => ${JSON.stringify(expected)} `, () => {
+    const res = compareArrays(a, b, { withCounter: true });
+    expect(res).toEqual(expected);
+    expectTypeOf(res).toEqualTypeOf<{ added: number; deleted: number }>();
+  });
 });
 
-test("Explicit indication of changes (1)", () => {
-  expect(compareArrays(data2, data3, { withModified: true })).toMatchObject({
-    deleted: [{ name: "Alex" }, { name: "Tommy" }],
-    added: [{ name: "Elena" }, { name: "Jesse" }],
+describe.concurrent(`describe withModified compare`, () => {
+  it("compare object[]", () => {
+    const expected = {
+      deleted: [],
+      added: [],
+    };
+    expect(compareArrays(data1, data2, { withModified: true })).toEqual(
+      expected,
+    );
   });
-});
-test("Explicit indication of changes (2)", () => {
-  expect(compareArrays(data1, data5, { withModified: true })).toMatchObject({
-    deleted: [{ name: "Tommy" }],
-    added: [{ name: "Elena" }],
+  it("compare object[]", () => {
+    const expected = {
+      deleted: [{ name: "Alex" }, { name: "Tommy" }],
+      added: [{ name: "Elena" }, { name: "Jesse" }],
+    };
+    expect(compareArrays(data2, data3, { withModified: true })).toEqual(
+      expected,
+    );
   });
-});
-test("Explicit indication of changes (3)", () => {
-  expect(compareArrays(data1, data2, { withModified: true })).toMatchObject({
-    deleted: [],
-    added: [],
+  it("compare number[]", () => {
+    const expected = { deleted: [], added: [4] };
+    expect(compareArrays(data7, data8, { withModified: true })).toEqual(
+      expected,
+    );
   });
 });
